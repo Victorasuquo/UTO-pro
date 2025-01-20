@@ -1,0 +1,6 @@
+openai==0.28.0
+python-dotenv
+ipython
+pandas
+jupyter
+streamlit==1.41.1
