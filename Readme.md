@@ -2,6 +2,8 @@
 
 This documentation provides a detailed overview of the code and instructions on how to use it. The code is a Flask application that integrates with MongoDB and OpenAI's GPT model to manage a project workflow.
 
+![API calls](image.png)
+*Figure 1: API calls*
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -234,8 +236,16 @@ def update_project_state(state_id, updates):
 
 ```python
 def query_gpt(prompt, model="gpt-4o-mini", max_tokens=500, temperature=0.7):
-    response = openai.ChatCompletion.create(
-        model=model,
+
+    """
+    Query the OpenAI GPT model with a given prompt.
+    Args:
+        prompt (str): The input prompt for the GPT model.
+    Returns:
+        str: The generated response from the GPT model.
+    """
+    response = client.chat.completions.create(
+        model=model,  # or another appropriate model
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
@@ -243,7 +253,7 @@ def query_gpt(prompt, model="gpt-4o-mini", max_tokens=500, temperature=0.7):
         max_tokens=max_tokens,
         temperature=temperature
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 ```
 
 ### Ask a Question and Update Context
