@@ -1,0 +1,7 @@
+Explanation of Github issues extensively
+I will save my response to notes.
+TensorFlow issues:
+1. Issue 1: Description of issue 1
+2. Issue 2: Description of issue 2
+3. Issue 3: Description of issue 3
+...
