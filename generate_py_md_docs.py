@@ -1,7 +1,7 @@
 import os
 import openai
 from multiprocessing import Pool # Multiprocessing. Utilizing mulitiple CPU cores for speed.
-import time 
+
 
 # Include your own API key.
 openai.api_key = ""
@@ -60,9 +60,4 @@ def generate_documentation():
     print("Documentation generated successfully for all Python files.")
 
 if __name__ == "__main__":
-    
-    start = time.time()
     generate_documentation()
-    end = time.time()
-    
-    print(end-start)
