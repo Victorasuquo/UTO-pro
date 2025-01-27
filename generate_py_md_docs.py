@@ -32,7 +32,7 @@ def read_file(file_path):
 def generate_markdown_output(content):
     # Sends a request to the OpenAI API, asking it to document the provided Python code.
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": 
                 f'''
