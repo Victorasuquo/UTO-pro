@@ -4,7 +4,7 @@ from multiprocessing import Pool # Multiprocessing. Utilizing mulitiple CPU core
 
 
 # Include your own API key.
-openai.api_key = ""
+openai.api_key = "OPEN_AI"
 
 
 def get_python_files(folder_path):
