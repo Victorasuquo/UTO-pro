@@ -4,7 +4,7 @@ from multiprocessing import Pool # Multiprocessing. Utilizing mulitiple CPU core
 
 
 # Include your own API key.
-openai.api_key = ""
+openai.api_key = "OPEN_AI"
 
 
 def get_python_files(folder_path):
@@ -32,7 +32,7 @@ def read_file(file_path):
 def generate_markdown_output(content):
     # Sends a request to the OpenAI API, asking it to document the provided Python code.
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": 
                 f'''
