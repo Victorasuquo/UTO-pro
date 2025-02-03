@@ -4,7 +4,7 @@ from multiprocessing import Pool # Multiprocessing. Utilizing mulitiple CPU core
 
 
 # Include your own API key.
-openai.api_key = "OPEN_AI"
+openai.api_key = "sk-svcacct--MpjIFRme5uSgt2Rmf9127aywUm7We0RzyPgdE2lOkgJQLh72OGbNdSbjo6wkyVQMqq0KT3BlbkFJ66NtEZtJj4kxP5OBeBIg78RtIxYc_deo9jNOGyJoT_BIkjmizwSmD1S2QsSAuKEqkRmAA"
 
 
 def get_python_files(folder_path):
@@ -36,23 +36,26 @@ def generate_markdown_output(content):
         messages=[
             {"role": "user", "content": 
                 f'''
-                    Create a detailed and well-structured Markdown documentation for the provided Python files. 
-                    Each documentation should be tailored to each files. The documentation should include the following sections:
-                    Introduction: Provide a brief overview of the application, with its actual name of the file, its purpose, and the technologies it integrates with.
-                    Prerequisites: List the requirements needed to run the application, such as Python version, OpenAI API key, etc.
-                    Installation: Provide step-by-step instructions on how to clone the repository (if available) and install the necessary dependencies using pip.
-                    Configuration: Explain how to set up the environment variables in a .env file, including the OpenAI API key and anything provided.
-                    Usage: Describe how to start the application and access it via a local server.
-                    Code Explanation: Break down the key components of the code, including:
-                    Imports and environment variable loading
-                    Application initialization
-                    Helper functions for querying the OpenAI GPT model, parsing stories, and extracting tasks
-                    Contributing: Provide guidelines for contributing to the project, including steps for forking the repository, creating a new branch, committing changes, and submitting a pull request.
-                    License: Mention the license under which the project is distributed (e.g., MIT License) and provide a link to the license file.
+                    "You are an AI assistant that generates detailed and structured documentation for Python code in markdown format. 
+                    Your goal is to analyze the given Python script and produce well-formatted documentation with the following details:
 
-                    Ensure that the documentation is clear, concise, and well-organized, with appropriate headings, subheadings, code blocks, and example JSON responses. 
-                    Use Markdown formatting for code snippets, lists, and tables where necessary.
-                    \n\n{content}
+                    1. *Title*: A brief and descriptive title for the script.
+                    2. *Overview*: A high-level summary of what the script does.
+                    3. *Installation & Dependencies*: List any required dependencies or installation steps (if applicable).
+                    4. *Usage*: Explain how to run the script with examples.
+                    5. *Function/Class Documentation*: 
+                    - For each function and class, provide:
+                        - A brief summary of its purpose.
+                        - Input parameters (names, types, and descriptions).
+                        - Return values (types and descriptions).
+                    6. *Code Walkthrough*: Explain the key sections of the script step by step.
+                    7. *Example Output*: If applicable, provide sample output or expected behavior.
+                    8. *Error Handling*: Highlight any error handling mechanisms in the code.
+
+                    Generate the documentation in *markdown format* with appropriate headings (#, ##, ###), lists (-), and code blocks (```). 
+                    Maintain clarity and conciseness while ensuring completeness.
+
+                    Here is the Python script to document:\n\n{content}
                 '''}
         ]
     )
