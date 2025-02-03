@@ -3,13 +3,17 @@ import openai
 import multiprocessing
 from dotenv import load_dotenv
 
-def find_markdown_files(directory):
-    """Recursively search for .md files in the given directory."""
+def find_markdown_files(folder_path):
+    """Recursively search for .md files in the given directory, excluding .venv."""
     markdown_files = []
-    for root, _, files in os.walk(directory):
+    for root, dirs, files in os.walk(folder_path):
+        if '.venv' in root.split(os.sep):  # Skip any folder inside .venv
+            continue
+        
         for file in files:
-            if file.endswith(".md"):
+            if file.endswith('.md'):
                 markdown_files.append(os.path.join(root, file))
+    
     return markdown_files
 
 def read_file(file):
@@ -28,20 +32,27 @@ def read_markdown_files(files):
     return file_contents
 
 def generate_documentation(file_contents):
-    """Use OpenAI to generate concise and accurate markdown documentation."""
+    """Use OpenAI to generate structured markdown documentation with accurate references."""
     prompt = """
     You are an AI that generates high-quality markdown documentation. Below are the contents of multiple markdown files.
-    Analyze them and generate a structured documentation file that concisely describes the purpose of each file, referencing them correctly.
+    Analyze them and generate a structured documentation file that concisely describes the purpose of each file, referencing them with full paths correctly.
 
     Markdown File Contents:
     """
-    for file, content in file_contents.items():
-        prompt += f"\n### File: {os.path.basename(file)}\n\n{content[:1000]}\n\n"  # Limit content to avoid token overload
     
+    documentation = "# Project Documentation\n\n"
+    
+    for file, content in file_contents.items():
+        file_name = os.path.basename(file)  # Get only the filename
+        relative_path = os.path.relpath(file, os.getcwd()).replace("\\", "/")  # Normalize path for Markdown
+        file_link = f"[{file_name}]({relative_path})"  # Create Markdown-compatible relative links
+        documentation += f"## {file_link}\n\n```\n{content[:1000]}\n```\n\n"  # Display the first 1000 characters
+    
+    prompt += documentation
     prompt += """
-    Generate a final documentation in markdown format, clearly referencing the individual files.
+    Generate a final documentation in markdown format, clearly referencing the individual files with their relative paths as clickable links.
     """
-
+    
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[{"role": "system", "content": "You are a helpful AI that writes documentation."},
@@ -54,8 +65,8 @@ def main():
     load_dotenv()
     openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure you have set this environment variable
     
-    directory = os.getcwd()
-    markdown_files = find_markdown_files(directory)
+    file_path = os.getcwd()
+    markdown_files = find_markdown_files(file_path)
     
     if not markdown_files:
         print("No .md files found.")
@@ -64,10 +75,11 @@ def main():
     file_contents = read_markdown_files(markdown_files)
     documentation = generate_documentation(file_contents)
     
-    with open(os.path.join(directory, "GENERAL DOCUMENTATION.md"), "w", encoding='utf-8') as doc_file:
+    doc_path = os.path.join(file_path, "GENERAL_DOCUMENTATION.md")
+    with open(doc_path, "w", encoding='utf-8') as doc_file:
         doc_file.write(documentation)
     
-    print("Generated GENERAL DOCUMENTATION.md in the specified directory.")
+    print(f"Generated GENERAL_DOCUMENTATION.md in {doc_path}.")
 
 if __name__ == "__main__":
     main()
