@@ -32,6 +32,9 @@ def read_markdown_files(files):
     return file_contents
 
 def generate_documentation(file_contents):
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")  # Ensure you have set this environment variable#
+    client = openai.OpenAI(api_key = api_key)
     """Use OpenAI to generate structured markdown documentation with accurate references."""
     prompt = """
     You are an AI that generates high-quality markdown documentation. Below are the contents of multiple markdown files.
@@ -53,17 +56,16 @@ def generate_documentation(file_contents):
     Generate a final documentation in markdown format, clearly referencing the individual files with their relative paths as clickable links.
     """
     
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="o3-mini",
         messages=[{"role": "system", "content": "You are a helpful AI that writes documentation."},
                   {"role": "user", "content": prompt}]
     )
     
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 def main():
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure you have set this environment variable
+    
     
     file_path = os.getcwd()
     markdown_files = find_markdown_files(file_path)

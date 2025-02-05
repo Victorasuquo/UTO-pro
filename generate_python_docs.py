@@ -4,7 +4,7 @@ from multiprocessing import Pool # Multiprocessing. Utilizing mulitiple CPU core
 
 
 # Include your own API key.
-openai.api_key = "sk-svcacct--MpjIFRme5uSgt2Rmf9127aywUm7We0RzyPgdE2lOkgJQLh72OGbNdSbjo6wkyVQMqq0KT3BlbkFJ66NtEZtJj4kxP5OBeBIg78RtIxYc_deo9jNOGyJoT_BIkjmizwSmD1S2QsSAuKEqkRmAA"
+client = openai.OpenAI(api_key = "sk-svcacct--MpjIFRme5uSgt2Rmf9127aywUm7We0RzyPgdE2lOkgJQLh72OGbNdSbjo6wkyVQMqq0KT3BlbkFJ66NtEZtJj4kxP5OBeBIg78RtIxYc_deo9jNOGyJoT_BIkjmizwSmD1S2QsSAuKEqkRmAA")
 
 
 def get_python_files(folder_path):
@@ -31,7 +31,7 @@ def read_file(file_path):
 
 def generate_markdown_output(content):
     # Sends a request to the OpenAI API, asking it to document the provided Python code.
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="o3-mini",
         messages=[
             {"role": "user", "content": 
@@ -59,7 +59,7 @@ def generate_markdown_output(content):
                 '''}
         ]
     )
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message.content
 
 def save_markdown_file(folder_path, file_name, content):
     # Creates the path for the Markdown file and writes the generated documentation to it.

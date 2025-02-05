@@ -1,71 +1,79 @@
-# Note Tool Script
+# Python Script Documentation: Note Saver Tool
 
 ## Overview
-The Note Tool script is a simple utility that allows users to save text notes to a local file. Each note is appended to a file named `notes.txt`, enabling easy note-taking and retrieval.
+This script defines a simple tool, `note_tool`, that saves text notes to a local file named "notes.txt". The function appends each new note to the file, ensuring that multiple notes are stored sequentially.
 
 ## Installation & Dependencies
-- **Dependencies**: 
-  - `langchain-core`: This library is required for using the `@tool` decorator in the script.
-- **Installation**: If you don't have `langchain-core` installed, you can do so via pip:
-  ```bash
-  pip install langchain-core
-  ```
+- **Python Version:** Python 3.x  
+- **Dependencies:**  
+  - The script imports the `tool` decorator from the `langchain_core.tools` module. Ensure that `langchain_core` is installed in your environment.  
+  - Install via pip (if available):
+    ```
+    pip install langchain_core
+    ```
 
 ## Usage
-To use the Note Tool script, you simply need to call the `note_tool` function with a string argument representing the note you want to save. Here's an example of how to run the script:
+To use the script:
+1. Ensure that `langchain_core` is installed.
+2. Include or import the script in your Python project.
+3. Call the decorated `note_tool` function with the text note you wish to save.
 
+### Example:
 ```python
-from your_module import note_tool
+from your_script_filename import note_tool  # Replace with your file name
 
 # Save a note
-note_tool("This is my first note.")
+note_tool("This is a sample note.")
 ```
+After running the script, the note will be appended to the `notes.txt` file in the same directory.
 
-Each time you invoke `note_tool`, the new note will be appended to `notes.txt`.
+## Function Documentation
 
-## Function/Class Documentation
+### note_tool(note)
+- **Purpose:**  
+  Saves the provided text note to a local file named "notes.txt". Each note is appended to the file with a newline character.
 
-### `note_tool`
-- **Purpose**: Saves a text note to a local file named `notes.txt`.
-- **Input Parameters**:
-  - `note` (str): The text note to save.
-- **Return Values**: 
-  - None
+- **Parameters:**  
+  - `note` (str): The text note to be saved.  
+    *Description:* The content of the note that will be written into the file.
+
+- **Return Value:**  
+  - None  
+    *Description:* The function performs a file append operation and does not return any value.
 
 ## Code Walkthrough
-The script consists of the following key sections:
+1. **Import Statement:**
+   - `from langchain_core.tools import tool`  
+     The script imports the `tool` decorator from the `langchain_core.tools` module. This decorator is likely used to register the function as a tool in a larger system.
 
-1. **Importing the Tool Decorator**:
-   ```python
-   from langchain_core.tools import tool
-   ```
-   This line imports the `tool` decorator from the `langchain_core` library, which is used to define a tool that can perform a specific action—in this case, saving notes.
+2. **Function Definition:**
+   - The function `note_tool` is defined and decorated with `@tool`.  
+   - **Docstring:**  
+     Provides a brief description and details about the input argument.
+   
+3. **File Operation:**
+   - Inside the function, the script opens the file `notes.txt` in append mode (`"a"`).  
+   - The note provided as an argument is written to the file followed by a newline (`\n`), ensuring that each note starts on a new line.
 
-2. **Defining the `note_tool` Function**:
-   ```python
-   @tool
-   def note_tool(note):
-       """
-       saves a note to a local file
-       
-       Args:
-           note: the text note to save
-       """
-       with open("notes.txt", "a") as f:
-           f.write(note + "\n")
-   ```
-   The `note_tool` function is decorated with `@tool`, allowing it to function as a tool within the langchain framework. The function takes a string input (`note`), opens the `notes.txt` file in append mode, and writes the note followed by a newline character.
+4. **Closing the File:**
+   - The `with open(...)` context manager is used to handle the file operations, ensuring that the file is properly closed after the note is written.
 
 ## Example Output
-When you run the following code:
+If you run:
 ```python
-note_tool("This is my second note.")
+note_tool("Remember to update the documentation!")
 ```
-The contents of `notes.txt` would be:
+The `notes.txt` file will be created (if it does not exist) or appended with the following line:
 ```
-This is my first note.
-This is my second note.
+Remember to update the documentation!
 ```
 
 ## Error Handling
-The current implementation does not include specific error handling mechanisms. If `notes.txt` cannot be opened (for example, due to permission issues), an exception will be raised. It is advisable to implement try-except blocks to gracefully handle such errors in a production environment.
+- **File Operations:**  
+  The script uses a context manager (`with open(...) as f:`) which automatically handles file closing, even if an error occurs during the file operation.
+- **Exception Handling:**  
+  There is no explicit exception handling (such as try-except blocks) in this script. If an error occurs during file writing (e.g., due to permission issues), the error will be propagated to the caller.
+
+---
+
+This documentation provides a complete overview and understanding of the script functionality, its usage, and internal workings. Adjust the dependency installation command or usage instructions based on your specific project setup and environment.

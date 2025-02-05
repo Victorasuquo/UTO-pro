@@ -1,56 +1,53 @@
-# Hello World Script Documentation
+# Simple Hello Messages Script Documentation
+
+## Title
+Simple Hello Messages Script
 
 ## Overview
-This script is a simple demonstration that prints greeting messages for two individuals, Aniebiet and Victor, to the console. It is primarily used to illustrate basic output functionality in Python.
+This Python script is designed to display two distinct greeting messages in the console. Each greeting is printed in a separate line. The script demonstrates basic usage of the `print()` function in Python.
 
 ## Installation & Dependencies
-There are no external dependencies required to run this script. It is a basic Python script and can be executed in any environment that supports Python 3.x.
+- **Python Version:** The script requires Python 3.x.
+- **Dependencies:** No external dependencies are required.
 
 ## Usage
-To run this script, follow these steps:
+To run the script, follow these steps:
 
-1. Ensure Python 3.x is installed on your machine.
-2. Create a new Python file, for example, `greeting.py`.
-3. Copy the following code into `greeting.py`:
-
-   ```python
-   print("Hello, I'm Aniebiet")
-   print("Hello, I'm Victor")
+1. Save the script to a file (e.g., `hello_messages.py`).
+2. Open a terminal or command prompt.
+3. Navigate to the directory containing the `hello_messages.py` file.
+4. Execute the script by running:
    ```
-
-4. Open a command line or terminal window.
-5. Navigate to the directory where `greeting.py` is located.
-6. Run the script with the following command:
-
+   python hello_messages.py
    ```
-   python greeting.py
-   ```
+   
+Upon execution, the script will output two greetings in the terminal.
 
 ## Function/Class Documentation
-This script does not contain any functions or classes as it consists solely of two print statements.
+This script does not contain any functions or classes. It only contains two calls to the `print()` function which output greeting messages.
 
 ## Code Walkthrough
-1. **Print Statement for Aniebiet**:
-   ```python
-   print("Hello, I'm Aniebiet")
-   ```
-   - This line executes the `print` function, sending "Hello, I'm Aniebiet" to the console.
-
-2. **Print Statement for Victor**:
-   ```python
-   print("Hello, I'm Victor")
-   ```
-   - Similar to the previous line, this line executes the `print` function, sending "Hello, I'm Victor" to the console.
+1. **First Print Statement**
+   - The script calls `print("Hello, I'm Aniebiet")`.
+   - This function call outputs the string *"Hello, I'm Aniebiet"* to the console.
+   
+2. **Second Print Statement**
+   - The script calls `print("Hello, I'm Victor")`.
+   - This function call outputs the string *"Hello, I'm Victor"* to the console.
+   
+The script executes these two print statements sequentially, displaying each greeting on its own line in the console.
 
 ## Example Output
-When the script is run, the expected output in the console will be:
-
+When the script is executed, the console output will be:
 ```
 Hello, I'm Aniebiet
 Hello, I'm Victor
 ```
 
 ## Error Handling
-This script does not incorporate any error handling mechanisms since it is straightforward and operates on guaranteed input/output scenarios without the risk of encountering exceptions. 
+- The script does not include explicit error handling mechanisms.
+- Given the simplicity of the operations (i.e., printing static strings), Python's standard entry-point error handling is sufficient for this script.
 
-For any runtime errors, such errors would typically arise from issues unrelated to the script logic, such as the absence of Python on the system or trying to execute the script in a non-Python environment.
+---
+
+This documentation provides a comprehensive overview of the script's functionality, intended usage, and internal workings, ensuring clarity for both new and experienced Python users.

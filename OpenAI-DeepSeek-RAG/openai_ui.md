@@ -1,101 +1,186 @@
-```markdown
-# Intelligent Document Query System (UTOM)
+# UTOM: Intelligent Document Query System
+
+This document provides detailed documentation for the "UTOM: Intelligent Document Query System" Python script. The following sections offer an in-depth look into its functionality, installation process, usage, and code walkthrough.
+
+---
 
 ## Overview
-The Intelligent Document Query System (UTOM) is a robust application built using Streamlit that allows users to upload Markdown documents, split them into smaller chunks, generate embeddings using OpenAI, and perform document queries. The system retrieves relevant chunks of information based on the user's query and generates structured responses.
+
+The script is designed to build an intelligent document query system using several key technologies:
+
+- **Streamlit** for building a user interface.
+- **ChromaDB** to persist and query document embeddings.
+- **OpenAI API** for generating embeddings and chat responses.
+- **dotenv** for managing environment variables (e.g., API keys).
+
+The system allows users to upload markdown files, automatically splits the text into manageable chunks, generates embeddings using OpenAI, stores them in a Chroma collection, and then enables querying of the documents. When a question is asked, the script retrieves relevant document chunks based on their embeddings and generates a structured response using a chat completion from the OpenAI API.
+
+---
 
 ## Installation & Dependencies
-To run this script, ensure you have the following dependencies installed:
 
-- `streamlit`
-- `python-dotenv`
-- `chromadb`
-- `openai`
+### Dependencies
 
-You can install these dependencies using pip:
+- Python 3.7 or higher
+- [Streamlit](https://streamlit.io/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [ChromaDB](https://github.com/chroma-core/chroma) or similar
+- [openai](https://github.com/openai/openai-python)
 
-```bash
-pip install streamlit python-dotenv chromadb openai
-```
+### Installation
 
-You also need to set up an `.env` file in your project directory containing the following variable:
+1. Install the required packages using pip:
 
-```
-OPENAI_API_KEY=your_openai_api_key
-```
+   ```
+   pip install streamlit python-dotenv chromadb openai
+   ```
 
-Replace `your_openai_api_key` with your actual OpenAI API key.
+2. Create a `.env` file in the root directory of your project and add your OpenAI API key:
+
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+3. (Optional) Set up a persistent storage directory if required by ChromaDB (default is set to "chroma_persistent_storage").
+
+---
 
 ## Usage
-To run the application, execute the following command in your terminal:
 
-```bash
-streamlit run your_script_name.py
-```
+1. Run the Streamlit application with the following command in your terminal:
 
-This script provides a user interface to upload Markdown files and query them.
+   ```
+   streamlit run <script_name.py>
+   ```
 
-### Example Workflow
+2. In the web UI:
+   - Upload one or more markdown (`.md`) files.
+   - Wait for the system to process and store the documents.
+   - Enter a question in the provided input field to query the stored documents.
+   - The system will display a structured answer based on the retrieved context.
 
-1. Upload Markdown files using the provided file uploader.
-2. Enter a question in the text input box to query the documents.
-3. View the generated answer displayed in a structured format.
+---
 
 ## Function/Class Documentation
 
-### `split_text(text, chunk_size=1000, chunk_overlap=20)`
-- **Purpose**: Splits a given text into smaller chunks with defined size and overlap.
-- **Input Parameters**:
-  - `text` (str): The text to be split.
-  - `chunk_size` (int, optional): The size of each text chunk. Default is 1000.
-  - `chunk_overlap` (int, optional): The number of overlapping characters between chunks. Default is 20.
-- **Return Values**:
-  - (list of str): A list of text chunks.
+### Function: split_text
 
-### `get_openai_embedding(text)`
-- **Purpose**: Generates an OpenAI embedding for the given text.
-- **Input Parameters**:
-  - `text` (str): The text for which to create an embedding.
-- **Return Values**:
-  - (list): The embedding vector for the input text.
+- **Purpose**: 
+  - Splits a given text into smaller chunks, facilitating easier processing and embedding for long documents.
 
-### `query_documents(question, n_results=2)`
-- **Purpose**: Queries the document collection to find relevant chunks based on the user's question.
-- **Input Parameters**:
-  - `question` (str): The user's question.
-  - `n_results` (int, optional): The number of results to return. Default is 2.
-- **Return Values**:
-  - (list of str): A list of relevant document chunks.
+- **Parameters**:
+  - `text` (str): The input text to be split.
+  - `chunk_size` (int, optional): The size of each text chunk. Defaults to 1000 characters.
+  - `chunk_overlap` (int, optional): The overlap between consecutive chunks to maintain context. Defaults to 20 characters.
 
-### `generate_response(question, relevant_chunks)`
-- **Purpose**: Generates a response from OpenAI based on the provided question and relevant chunks.
-- **Input Parameters**:
-  - `question` (str): The user's question.
-  - `relevant_chunks` (list of str): The chunks of text relevant to the question.
-- **Return Values**:
-  - (str): Formatted response string from OpenAI.
+- **Returns**:
+  - `List[str]`: A list of text chunks extracted from the input `text`.
+
+### Function: get_openai_embedding
+
+- **Purpose**:
+  - Calls the OpenAI API to generate an embedding for a given text.
+
+- **Parameters**:
+  - `text` (str): The text for which the embedding is generated.
+
+- **Returns**:
+  - `List[float]` (or similar, depending on API response): The embedding vector for the provided text.
+
+### Function: query_documents
+
+- **Purpose**:
+  - Queries the Chroma collection to retrieve document chunks relevant to a given question.
+
+- **Parameters**:
+  - `question` (str): The question/query for which documents are to be retrieved.
+  - `n_results` (int, optional): The number of results to retrieve. Defaults to 2.
+
+- **Returns**:
+  - `List[str]`: A list of document chunks that are relevant to the input question.
+
+### Function: generate_response
+
+- **Purpose**:
+  - Generates a response for a given question by integrating the relevant document chunks into a structured prompt and sending it to the OpenAI chat API.
+
+- **Parameters**:
+  - `question` (str): The input question.
+  - `relevant_chunks` (List[str]): A list of document chunks serving as context for the answer.
+
+- **Returns**:
+  - `str`: The structured answer generated by the OpenAI chat model.
+
+---
 
 ## Code Walkthrough
-1. **Environment Setup**: The script begins by loading environment variables and initializing the OpenAI and Chroma clients.
-2. **Document Upload**: Through the Streamlit UI, users can upload Markdown files. Upon upload, the text is read and stored in a list.
-3. **Text Chunking**: The script splits the texts into chunks and retains necessary overlaps to ensure smoother context retrieval.
-4. **Embedding Generation**: Each chunk is converted into an embedding using the OpenAI API, which is then stored in the Chroma collection for querying.
-5. **Query Processing**: Users can input their questions, which trigger searching through relevant document chunks.
-6. **Response Generation**: A structured response is generated based on the context retrieved from the document chunks.
+
+1. **Environment and Library Setup**:
+   - The script imports necessary modules such as `os`, `streamlit`, `dotenv`, `chromadb`, and `openai`.
+   - It loads environment variables using `load_dotenv()` to access the `OPENAI_API_KEY`.
+
+2. **Embedding Function Initialization**:
+   - An OpenAI embedding function is created with `embedding_functions.OpenAIEmbeddingFunction`, using the API key and the model `"text-embedding-3-small"`.
+
+3. **ChromaDB Client and Collection Setup**:
+   - A persistent ChromaDB client is initialized with a directory name for data persistence.
+   - A collection named `document_qa_collection` is either retrieved or created for storing document embeddings.
+
+4. **OpenAI API Client Setup**:
+   - An instance of the OpenAI client is created for generating text embeddings and obtaining chat completions.
+
+5. **Document Processing Functions**:
+   - `split_text`: Handles the splitting of large documents into smaller chunks.
+   - `get_openai_embedding`: Generates embeddings for the text chunks via the OpenAI API.
+   - `query_documents`: Retrieves document chunks that are relevant to the user’s query.
+   - `generate_response`: Builds a prompt using the retrieved context and generates a structured answer through the OpenAI chat API.
+
+6. **Streamlit User Interface**:
+   - A title is rendered using `st.title`.
+   - Users can upload markdown files using `st.file_uploader`.
+   - Uploaded documents are processed:
+     - The full text is split into chunks.
+     - For each chunk, an embedding is generated and the chunk is upserted (stored) in the Chroma collection.
+   - The script then takes user input as a query, retrieves relevant document chunks, and displays the generated answer using markdown formatting.
+
+---
 
 ## Example Output
-When a user uploads documents and asks a question, the system will output something like this:
+
+After uploading markdown documents and entering a question, the response might look like:
 
 ```
 ### Answer:
-**Purpose**: This system allows users to query documents intelligently.
+Purpose:
+- To provide an intelligent answer to the queried topic based on the uploaded documents.
 
-**Primary Functionality**:
-- Upload documents in Markdown format.
-- Generate embeddings for efficient querying.
-- Retrieve and display structured answers based on user queries.
+Primary Functionality:
+- Splitting documents into manageable chunks.
+- Generating embeddings for each chunk.
+- Retrieving and querying the stored data for relevant context.
+- Generating a well-structured answer using the OpenAI chat API.
 ```
+
+This output is dynamically generated by the OpenAI chat API and rendered in the Streamlit app.
+
+---
 
 ## Error Handling
-The script contains basic checks to ensure uploaded files are processed correctly and to handle cases where no relevant documents are found. Users receive clear messages indicating the processing status and any relevant errors during execution.
-```
+
+- **Environment Variables**: 
+  - The script assumes that the `.env` file will contain the `OPENAI_API_KEY`. If it is missing, the OpenAI API calls may fail.
+  
+- **File Uploads**:
+  - The code checks if files are uploaded before processing them. If no files are uploaded, it will simply not execute the document processing steps.
+
+- **API Responses**:
+  - The script directly uses responses from OpenAI's API. It assumes valid responses are returned and does not add explicit retry or error logging mechanisms.
+
+- **Chroma Database**:
+  - The script uses `get_or_create_collection` which gracefully handles the retrieval or initialization of the document collection.
+  
+While the script does not include extensive try/except blocks, it relies on the robustness of the imported libraries to manage errors and exceptions at runtime.
+
+---
+
+This documentation serves as a comprehensive guide for understanding, installing, and using the "UTOM: Intelligent Document Query System" script.
