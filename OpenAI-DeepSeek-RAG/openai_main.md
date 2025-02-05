@@ -1,100 +1,202 @@
-# Documentation for Document QA System
+# Document QA with Chroma and OpenAI Embeddings
+
+This documentation describes a Python script designed to load Markdown documents from a specified directory, split them into manageable text chunks, generate embeddings for these chunks using the OpenAI API, store the embeddings in a persistent Chroma database, and finally query the database to generate responses using a ChatGPT-like API.
+
+---
 
 ## Overview
-This Python script implements a Document Question Answering (QA) system. It loads markdown documents from a specified directory, splits them into manageable chunks, generates text embeddings using the OpenAI API, stores them in a ChromaDB collection, and enables querying of these documents to generate concise answers to user questions.
+
+The script performs the following key tasks:
+- Loads environment variables (including the OpenAI API key) from a ".env" file.
+- Initializes an embedding function powered by OpenAI and configures a persistent Chroma database collection.
+- Reads Markdown files from a specified directory and loads their contents.
+- Splits the contents into smaller text chunks with configurable overlap.
+- Generates vector embeddings for each text chunk using OpenAI's embedding API.
+- Inserts the chunks and their embeddings into the persistent Chroma database.
+- Defines functions to query the database and generate a response based on the retrieved chunks.
+- Executes an example query that retrieves relevant document chunks and generates an answer using a ChatGPT-like interface.
+
+---
 
 ## Installation & Dependencies
-To set up the project, ensure the following dependencies are installed:
-- `python-dotenv` for loading environment variables.
-- `chromadb` for storing and managing document chunks.
-- `openai` for accessing OpenAI's API for embeddings.
 
-To install the dependencies, use:
+Before running the script, ensure that you have Python 3 installed along with the following dependencies:
+
+- [python-dotenv](https://pypi.org/project/python-dotenv/): For loading environment variables.
+- [Chromadb](https://pypi.org/project/chromadb/): For handling persistent vector storage.
+- [openai](https://pypi.org/project/openai/): For accessing OpenAI's API to generate embeddings and completions.
+
+Install the dependencies via pip:
+
 ```bash
 pip install python-dotenv chromadb openai
 ```
 
-Make sure to set up an `.env` file in the project directory containing your OpenAI API key:
+Additionally, create a `.env` file in the same directory as the script containing:
+
+```plaintext
+OPENAI_API_KEY=your_openai_api_key_here
 ```
-OPENAI_API_KEY=your_openai_api_key
-```
+
+---
 
 ## Usage
-To run the script, simply execute it in the terminal after ensuring the markdown documents are present in the specified directory (`./files`). The script uses `print` statements extensively to provide feedback on its progress.
 
-### Example
+1. Place your Markdown files (with a `.md` extension) in a directory called `files` (or update the `directory_path` variable accordingly).
+2. Ensure your `.env` file contains your OpenAI API key.
+3. Run the script from the command line:
+
 ```bash
-python document_qa_system.py
+python your_script_name.py
 ```
 
-## Function/Class Documentation
+Example query is hardcoded to ask:
+"tell me in detail all about the project described in the readme file"  
+Upon execution, the script loads the documents, processes them, generates embeddings, stores them, executes the query, and prints the answer.
 
-### `load_documents_from_directory(directory_path)`
-Loads markdown documents from a specified directory.
+---
 
-- **Input Parameters:**
-  - `directory_path` (str): Path to the directory containing the markdown documents.
-  
-- **Return Values:**
-  - List[Dict[str, str]]: A list of dictionaries, each containing the document ID and text.
+## Function and Class Documentation
 
-### `split_text(text, chunk_size=1000, chunk_overlap=20)`
-Splits a given text into chunks of specified size with some overlap between the chunks.
+### load_documents_from_directory(directory_path)
 
-- **Input Parameters:**
-  - `text` (str): The text to be split.
-  - `chunk_size` (int): Desired size of each chunk (default is 1000).
-  - `chunk_overlap` (int): Number of overlapping characters between consecutive chunks (default is 20).
-  
-- **Return Values:**
-  - List[str]: A list containing the split chunks of text.
+- **Purpose:**  
+  Loads Markdown documents from the specified directory.
 
-### `get_openai_embedding(text)`
-Generates an embedding for the provided text using the OpenAI API.
+- **Parameters:**  
+  - `directory_path` (str): The path to the directory containing Markdown (*.md) files.
 
-- **Input Parameters:**
-  - `text` (str): The text to generate an embedding for.
-  
-- **Return Values:**
-  - List[float]: A list of numerical values representing the embedding.
+- **Returns:**  
+  - A list of dictionaries, each containing:
+    - `id` (str): File name.
+    - `text` (str): Contents of the file.
 
-### `query_documents(question, n_results=2)`
-Queries the ChromaDB for relevant document chunks based on the provided question.
+---
 
-- **Input Parameters:**
-  - `question` (str): The question for which to find relevant documents.
-  - `n_results` (int): The number of results to return (default is 2).
-  
-- **Return Values:**
-  - List[str]: A list of relevant document chunks.
+### split_text(text, chunk_size=1000, chunk_overlap=20)
 
-### `generate_response(question, relevant_chunks)`
-Generates a concise answer based on the relevant document chunks and provided question.
+- **Purpose:**  
+  Splits a given text into smaller chunks based on a specified size and overlap to ensure context continuity.
 
-- **Input Parameters:**
-  - `question` (str): The question for which to generate a response.
-  - `relevant_chunks` (List[str]): The context chunks to consider for generating an answer.
-  
-- **Return Values:**
-  - str: A concise response generated by the OpenAI model.
+- **Parameters:**  
+  - `text` (str): The text to split.
+  - `chunk_size` (int, optional): The number of characters per chunk. Defaults to 1000.
+  - `chunk_overlap` (int, optional): The number of overlapping characters between consecutive chunks. Defaults to 20.
+
+- **Returns:**  
+  - A list of string chunks extracted from the text.
+
+---
+
+### get_openai_embedding(text)
+
+- **Purpose:**  
+  Generates an embedding for a given text using the OpenAI API.
+
+- **Parameters:**  
+  - `text` (str): The input text to generate an embedding for.
+
+- **Returns:**  
+  - A list or vector (depending on API response) representing the embedding of the input text.
+
+---
+
+### query_documents(question, n_results=2)
+
+- **Purpose:**  
+  Queries the Chroma persistent collection for document chunks relevant to the provided question.
+
+- **Parameters:**  
+  - `question` (str): The natural language question to query.
+  - `n_results` (int, optional): The number of results to return. Defaults to 2.
+
+- **Returns:**  
+  - A list of relevant document chunk texts retrieved from the collection.
+
+---
+
+### generate_response(question, relevant_chunks)
+
+- **Purpose:**  
+  Generates a concise response to the question based on the provided relevant document chunks.  
+  The response is generated by formulating a prompt that includes context and forwarding it to the OpenAI-powered chat completion API.
+
+- **Parameters:**  
+  - `question` (str): The question posed by the user.
+  - `relevant_chunks` (list of str): The list of document chunks retrieved from the database.
+
+- **Returns:**  
+  - A structured answer generated by the OpenAI chat completions endpoint.
+
+---
 
 ## Code Walkthrough
-1. **Environment Setup:** The script loads an API key from the environment using `dotenv`, enabling interaction with OpenAI's API.
-2. **Database Initialization:** It initializes a persistent Chroma client to store document chunks.
-3. **Document Loading:** The `load_documents_from_directory` function imports markdown files and reads their content into memory.
-4. **Text Chunking:** The loaded documents are split into smaller pieces using the `split_text` function, allowing for efficient processing and retrieval.
-5. **Embedding Generation:** For each text chunk, an embedding is generated using OpenAI's embedding function and stored alongside the chunk.
-6. **Database Insertion:** The generated chunks and their embeddings are then inserted into the ChromaDB collection.
-7. **Query Handling:** The `query_documents` function retrieves relevant chunks based on a user query.
-8. **Response Generation:** Finally, the `generate_response` function uses the relevant chunks to form an answer, which is printed to the console.
+
+1. **Environment Setup & Library Imports:**  
+   - The script imports required libraries (`os`, `dotenv`, `chromadb`, `openai`, `chromadb.utils.embedding_functions`).  
+   - Environment variables (including the `OPENAI_API_KEY`) are loaded from a `.env` file.
+
+2. **Embedding Function and Database Initialization:**  
+   - An OpenAI embedding function (`openai_ef`) is created using the API key and model "text-embedding-3-small".
+   - A persistent Chroma client is initialized with a specified storage path, and a collection (or a new one if it doesn't exist) is created.
+
+3. **Document Loading:**  
+   - The `load_documents_from_directory` function scans the specified directory for Markdown files (`*.md`), reads their contents, and returns a list of document dictionaries.
+
+4. **Text Chunking:**  
+   - The `split_text` function breaks the document content into chunks with an overlap (ensuring context is preserved across boundaries).
+
+5. **Embedding Generation:**  
+   - For each chunk, the `get_openai_embedding` function is used to obtain vector embeddings.  
+   - The script prints messages to indicate the start of the embedding generation process.
+
+6. **Insertion into the Chroma Database:**  
+   - Each document chunk along with its embedding is inserted into the persistent collection using the `upsert` method.
+
+7. **Querying the Database and Generating a Response:**  
+   - The `query_documents` function retrieves relevant document chunks given a user query.
+   - The `generate_response` function constructs a detailed prompt that includes the retrieved chunks and queries the OpenAI chat completion API.  
+   - The final answer is printed out.
+
+---
 
 ## Example Output
-Upon asking a question, the expected output is a concise response derived from the relevant chunks of documents, such as:
+
+An example of a query is provided in the script:
+
+```python
+question = "tell me in detail all about the project described in the readme file"
+relevant_chunks = query_documents(question)
+answer = generate_response(question, relevant_chunks)
+print(answer)
 ```
-The project described in the README focuses on implementing a Document QA system that efficiently retrieves and presents information based on user queries.
+
+When executed, the script prints the generated answer from the OpenAI API. A typical output might resemble:
+
 ```
+==== Loading documents from directory ====
+==== Splitting docs into chunks ====
+==== Generating embeddings... ====
+==== Inserting chunks into db;;; ====
+==== Returning relevant chunks ====
+<Answer: "The project leverages document processing and embedding generation to facilitate question answering. It uses a persistent vector store for efficient retrieval and integrates with OpenAI’s API for natural language responses.">
+```
+
+---
 
 ## Error Handling
-The script currently lacks explicit error handling mechanisms. However, it's advisable to implement try-except blocks around critical sections (like file reading, API calls, and database operations) to gracefully manage potential failures (e.g., file not found, API timeouts). 
 
-Consider adding logging to record and monitor any issues that might arise during execution.
+- **File Handling:**  
+  The script opens files without explicit try/except error handling. This implies that if a file cannot be read or the directory is not found, a Python exception will be raised.
+
+- **API Calls:**  
+  There is no advanced error handling for API calls (embeddings or completions). In case of network issues or API errors, the script may terminate with an exception.
+
+- **General:**  
+  The script uses print statements for logging progress, which helps in tracking the execution flow but does not capture or handle exceptions explicitly.
+
+To improve error resilience, consider adding try/except blocks around file I/O and API calls.
+
+---
+
+This detailed documentation should help in understanding, setting up, and utilizing the script for document processing, embedding generation, and query-based response generation using Chroma and OpenAI APIs.
